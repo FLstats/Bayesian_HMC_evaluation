@@ -83,4 +83,3 @@ fit_fun(stan_file = "stan/hrb.stan", nj = 2, ni = 3)
 
 
 
-

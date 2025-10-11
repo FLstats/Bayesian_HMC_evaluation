@@ -20,11 +20,13 @@ cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
 # --------------------------------------------------- #
 #                 READ GENERATED DATA                 #
 # --------------------------------------------------- #
-read_model <- function(model) {
-  readRDS(paste0(getwd(), "/data", "/hrb_gen_data", model, ".rds"))
+read_data <- function(nj, ni, set) {
+  readRDS(paste0(getwd(), "/data", "/hrb_gen_data_nj=", nj,
+                 "_ni=", ni, "_set", set, ".rds"))
 }
 
-df <- read_model(1)$data
+nj <- 2; ni <- 3; set <- 6
+df <- read_data(nj, ni, set)$data
 head(df)
 
 # --------------------------------------------------- #
@@ -47,7 +49,7 @@ pairs_plot <- function(data) {
   # Lower triangle: filled density contours
   panel_contour <- function(data, mapping, ...) {
     ggplot(data, mapping) +
-      geom_point(alpha = 0.1, size = 0.6) +
+      geom_point(alpha = 0.5, size = 0.3) +
       stat_density2d(aes(fill = after_stat(level)),
                      geom = "polygon",
                      contour_var = "ndensity",
@@ -77,4 +79,11 @@ pairs_plot <- function(data) {
 
 # CREATE PAIRS PLOT
 pairs_plot(data = df)
+
+# Save plot
+ggsave(paste0("plots/pairsplot_", "nj=", nj, "_ni=", ni, "_set", set, ".pdf"),
+       width = 6, height = 5)
+
+
+
 

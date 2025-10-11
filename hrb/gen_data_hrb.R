@@ -39,7 +39,7 @@ theme_set(theme_bw(base_family = "serif", base_size = 14))
 data_gen_fun <- function(stan_file, nj, ni, configs) {
   
   # COLNAMES FUNCTION
-  make_colnames <- function(ni, nj) {
+  make_colnames <- function(nj, ni) {
     cols <- "x1"
     for (j in 1:nj) {
       for (i in 2:ni) {
@@ -83,6 +83,7 @@ data_gen_fun <- function(stan_file, nj, ni, configs) {
     X_array <- rstan::extract(sim)$X # dim: [1, N, n_dim]
     X_mat <- drop(X_array) # dim: [N, n_dim]
     sim_df <- as.data.frame(X_mat)
+    colnames(sim_df) <- make_colnames(nj, ni)
     
     out <- list(
       data = sim_df,
@@ -109,6 +110,7 @@ data_gen_fun(stan_file = "stan/simulate-data_hrb.stan",
              nj = 2,
              ni = 3,
              configs = cnfgs)
+
 
 
 
