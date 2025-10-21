@@ -68,7 +68,7 @@ data_gen_fun <- function(stan_file, configs) {
     X_array <- rstan::extract(sim)$X # dim: [1, N, P]
     X_mat <- drop(X_array) # dim: [N, P]
     sim_df <- as.data.frame(X_mat)
-    colnames(sim_df) <- paste0("X", rep(1:P))
+    colnames(sim_df) <- c("V", paste0("X", rep(1:P)))
     
     out <- list(
       "data" = sim_df,

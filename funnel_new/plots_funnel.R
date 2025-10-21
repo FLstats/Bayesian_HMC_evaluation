@@ -63,7 +63,7 @@ wrap_plots(plots, ncol = 3)
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### #### ####
 mypath <- getwd()
 data_path <- file.path(mypath, "data")
-data_files <- list.files(data_path, pattern = "P=9_.*\\.rds$", full.names = TRUE)
+data_files <- list.files(data_path, pattern = "funnel_gen_data.*\\.rds$", full.names = TRUE)
 datasets <- lapply(data_files, readRDS)
 K <- length(datasets)
 
@@ -74,7 +74,6 @@ plot_grid <- function(xi, sigma_vals) {
   
   for (i in seq_len(K)) {
     df <- datasets[[i]]$data
-    colnames(df) <- c("v", paste0("x", 1:9))
     
     plot <- ggplot(df, aes(x = .data[[xi]], y = v)) +
       geom_point(alpha = 0.3, size = 0.6) +
