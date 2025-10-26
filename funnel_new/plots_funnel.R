@@ -16,6 +16,10 @@ filter <- dplyr::filter
 cbbPalette <- c("#000000", "#E69F00", "#56B4E9", "#009E73",
                 "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+fit <- readRDS(file.path(getwd(), "stanfits/funnel_fit_P=3.rds"))
+draws <- as_draws_df(fit[["fit"]])
+
 # --------------------------------------------------- #
 #                   2d funnel plot                    #
 # --------------------------------------------------- #
@@ -48,6 +52,7 @@ plot_funnel <- function(xi, idx) {
 
 plot_funnel(x1, 1)
 
+ggsave("plots/2d-funnel.pdf", width = 6, height = 5)
 
 # # Remove outliers if needed
 # range(v)

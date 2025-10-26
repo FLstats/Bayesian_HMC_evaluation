@@ -25,7 +25,7 @@ read_data <- function(nj, ni, set) {
                  "_ni=", ni, "_set", set, ".rds"))
 }
 
-nj <- 2; ni <- 3; set <- 6
+nj <- 2; ni <- 3; set <- 1
 df <- read_data(nj, ni, set)$data
 head(df)
 
@@ -83,6 +83,52 @@ pairs_plot(data = df)
 # Save plot
 ggsave(paste0("plots/pairsplot_", "nj=", nj, "_ni=", ni, "_set", set, ".pdf"),
        width = 6, height = 5)
+
+
+# --------------------------------------------------- #
+#                       2D PLOT                       #
+# --------------------------------------------------- #
+ggplot(df, aes(x=x1, y=x12)) +
+  geom_point(alpha = 0.5, size = 0.3) +
+  # stat_density2d(aes(fill = after_stat(level)),
+  #                geom = "polygon",
+  #                contour_var = "ndensity",
+  #                bins = 9, # number of contours
+  #                n = 300, # higher grid resolution
+  #                h = c(bw.nrd(df$x1), 
+  #                      bw.nrd(df$x12)) # gentler smoothing
+  # ) +
+  scale_fill_viridis_c(guide = "none") +
+  theme_bw(base_size = 9) +
+  theme(panel.grid = element_blank())
+
+ggsave("plots/2d_(x1,x12)_set1.pdf", width = 6, height = 5)
+
+# --------------------------------------------------- #
+#                       3D PLOT                       #
+# --------------------------------------------------- #
+library(plotly)
+
+plot_ly(
+  data = df,
+  x = ~x1, y = ~x12, z = ~x13,
+  type = "scatter3d",
+  mode = "markers",
+  marker = list(
+    size=4,
+    opacity=0.55,
+    color = "rgba(50, 0, 0, 0.8)"
+  )
+)
+
+ggsave("plots/3d_(x1,x12,x13)_set1.pdf", width = 6, height = 5)
+
+
+
+
+
+
+
 
 
 
