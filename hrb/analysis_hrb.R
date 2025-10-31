@@ -54,15 +54,68 @@ calc_metrics <- function(nj, ni) {
     sq_err <- sweep(draws[, params], 2, as.numeric(truth), "-")^2
     rmse_point <- sqrt(colMeans(sq_err))
     # Take sqrt() to get back squared errors to "error scale".
-    rmse_ci <- apply(sq_err, 2, function(se) {
+    rmse_abs_q <- apply(sq_err, 2, function(se) {
       quantile(sqrt(se), probs = c(0.025, 0.975))
     })
+    
+    # RHAT
+    rhats <- summary(stanfits[[i]]$fit)$summary[, "Rhat"]
+    
+    # POSTERIOR QUANTITIES
+    mcse_mu <- draws %>% pull(mu) %>% mcse_mean()
+    mcse_a <- draws %>% pull(a) %>% mcse_mean()
+    mcse_b <- draws %>% pull(b) %>% mcse_mean()
+    
+    post_mean_mu <- draws %>% pull(mu) %>% mean()
+    post_mean_a <- draws %>% pull(a) %>% mean()
+    post_mean_b <- draws %>% pull(b) %>% mean()
+    
+    post_sd_mu <- draws %>% pull(mu) %>% sd()
+    post_sd_a <- draws %>% pull(a) %>% sd()
+    post_sd_b <- draws %>% pull(b) %>% sd()
+    
+    # Rounding
+    count_leading_zeros <- function(x) {
+      s <- format(x, scientific = FALSE, trim = TRUE)
+      if (!grepl("\\.", s)) return(0)  # no decimal point
+      digits <- sub("^[^.]*\\.", "", s)           # remove everything before "."
+      zeros <- regexpr("[1-9]", digits) - 1       # count zeros before first nonzero
+      ifelse(zeros < 0, 0, zeros)
+    }
+    digits_mu <- count_leading_zeros(mcse_mu)
+    post_mean_mu <- round(post_mean_mu, digits_mu)
+    post_sd_mu <- round(post_sd_mu, digits_mu)
+    
+    digits_a <- count_leading_zeros(mcse_a)
+    post_mean_a <- round(post_mean_a, digits_a)
+    post_sd_a <- round(post_sd_a, digits_a)
+    
+    digits_b <- count_leading_zeros(mcse_b)
+    post_mean_b <- round(post_mean_b, digits_b)
+    post_sd_b <- round(post_sd_b, digits_b)
+    
+    # Place in df
+    mcse <- data.frame(
+      mu = mcse_mu, a = mcse_a, b = mcse_b
+    )
+    
+    posterior_means <- data.frame(
+      mu = post_mean_mu, a = post_mean_a, b = post_mean_b
+    )
+    
+    posterior_sd <- data.frame(
+      mu = post_sd_mu, a = post_sd_a, b = post_sd_b
+    )
     
     # OUTPUT LIST OF RESULTS
     results[[i]] <- list(
       rmse_point = rmse_point,
-      rmse_ci = rmse_ci,
-      config = truth
+      rmse_abs_q = rmse_abs_q,
+      rhats = rhats,
+      true_values = truth,
+      mcse = mcse,
+      post_mean = posterior_means,
+      post_sd = posterior_sd
     )
     # End of for loop
   }

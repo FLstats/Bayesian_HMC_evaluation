@@ -66,7 +66,7 @@ calc_metrics <- function() {
     post_mean <- mean(post_v)
     post_sd <- sd(post_v)
     
-    # rounding
+    # Rounding
     count_leading_zeros <- function(x) {
       s <- format(x, scientific = FALSE, trim = TRUE)
       if (!grepl("\\.", s)) return(0)  # no decimal point
