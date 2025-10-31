@@ -88,8 +88,8 @@ data_gen_fun <- function(stan_file, configs) {
 #                         RUN                         #
 # --------------------------------------------------- #
 cnfgs <- data.frame(
-  P = c(3, 6, 9, 12, 15, 18, 21, 24, 27)
-  # P = 3
+  # P = c(3, 6, 9, 12, 15, 18, 21, 24, 27)
+  P = c(1, 20, 50, 75, 150)
 )
 
 data_gen_fun(stan_file = "stan/simulate-data_funnel.stan",
